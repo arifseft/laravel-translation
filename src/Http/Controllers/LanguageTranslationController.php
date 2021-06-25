@@ -48,22 +48,43 @@ class LanguageTranslationController extends Controller
 
     public function create(Request $request, $language)
     {
-        return view('translation::languages.translations.create', compact('language'));
+        $languages = $this->translation->allLanguages();
+
+        return view('translation::languages.translations.create', compact('language', 'languages'));
     }
 
     public function store(TranslationRequest $request, $language)
     {
-        if ($request->filled('group')) {
-            $namespace = $request->has('namespace') && $request->get('namespace') ? "{$request->get('namespace')}::" : '';
-            $this->translation->addGroupTranslation($language, "{$namespace}{$request->get('group')}", $request->get('key'), $request->get('value') ?: '');
-        } else {
-            $this->translation->addSingleTranslation($language, 'single', $request->get('key'), $request->get('value') ?: '');
+        $languages = $this->translation->allLanguages();
+
+        foreach ($languages as $lang) {
+            $values = $request->get('values');
+            if ($request->filled('group')) {
+                $namespace = $request->has('namespace') && $request->get('namespace') ? "{$request->get('namespace')}::" : '';
+                $this->translation->addGroupTranslation($lang, "{$namespace}{$request->get('group')}", $request->get('key'), $values[$lang] ?: '');
+            } else {
+                $this->translation->addSingleTranslation($lang, 'single', $request->get('key'), $values[$lang] ?: '');
+            }
         }
 
         return redirect()
-            ->route('languages.translations.index', $language)
+            ->route('languages.translations.index', ['language' => $language, 'filter' => $request->get('key'), 'group' => $request->get('group', 'single')])
             ->with('success', __('translation::translation.translation_added'));
     }
+
+    // public function store(TranslationRequest $request, $language)
+    // {
+    //     if ($request->filled('group')) {
+    //         $namespace = $request->has('namespace') && $request->get('namespace') ? "{$request->get('namespace')}::" : '';
+    //         $this->translation->addGroupTranslation($language, "{$namespace}{$request->get('group')}", $request->get('key'), $request->get('value') ?: '');
+    //     } else {
+    //         $this->translation->addSingleTranslation($language, 'single', $request->get('key'), $request->get('value') ?: '');
+    //     }
+    //
+    //     return redirect()
+    //         ->route('languages.translations.index', $language)
+    //         ->with('success', __('translation::translation.translation_added'));
+    // }
 
     public function update(Request $request, $language)
     {

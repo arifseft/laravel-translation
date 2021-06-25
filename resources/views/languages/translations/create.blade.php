@@ -10,7 +10,8 @@
 
         </div>
 
-        <form action="{{ route('languages.translations.store', $language) }}" method="POST">
+        {{-- <form action="{{ route('languages.translations.store', $language) }}" method="POST"> --}}
+        <form action="{{ route('languages.translations.store', 'en') }}" method="POST">
 
             <fieldset>
 
@@ -18,23 +19,25 @@
 
                 <div class="panel-body p-4">
 
-                    @include('translation::forms.text', ['field' => 'group', 'label' => __('translation::translation.group_label'), 'placeholder' => __('translation::translation.group_placeholder')])
+                    {{-- @include('translation::forms.text', ['field' => 'group', 'label' => __('translation::translation.group_label'), 'placeholder' => __('translation::translation.group_placeholder')]) --}}
                     
                     @include('translation::forms.text', ['field' => 'key', 'label' => __('translation::translation.key_label'), 'placeholder' => __('translation::translation.key_placeholder')])
 
-                    @include('translation::forms.text', ['field' => 'value', 'label' => __('translation::translation.value_label'), 'placeholder' => __('translation::translation.value_placeholder')])
+                    @foreach($languages as $lang)
+                      @include('translation::forms.text', ['field' => "values[$lang]", 'label' => __('translation::translation.value_label') . ' (' . strtoupper($lang) . ')', 'placeholder' => __('translation::translation.value_placeholder')])
+                    @endforeach
                     
-                    <div class="input-group">
-
-                        <button v-on:click="toggleAdvancedOptions" class="text-blue">{{ __('translation::translation.advanced_options') }}</button>
-
-                    </div>
-
-                    <div v-show="showAdvancedOptions">
-
-                        @include('translation::forms.text', ['field' => 'namespace', 'label' => __('translation::translation.namespace_label'), 'placeholder' => __('translation::translation.namespace_placeholder')])
-                    
-                    </div>
+                    {{-- <div class="input-group"> --}}
+                    {{--  --}}
+                    {{--     <button v-on:click="toggleAdvancedOptions" class="text-blue">{{ __('translation::translation.advanced_options') }}</button> --}}
+                    {{--  --}}
+                    {{-- </div> --}}
+                    {{--  --}}
+                    {{-- <div v-show="showAdvancedOptions"> --}}
+                    {{--  --}}
+                    {{--     @include('translation::forms.text', ['field' => 'namespace', 'label' => __('translation::translation.namespace_label'), 'placeholder' => __('translation::translation.namespace_placeholder')]) --}}
+                    {{--  --}}
+                    {{-- </div> --}}
 
   
                 </div>

@@ -12,7 +12,7 @@
     
     <div id="app">
         
-        @include('translation::nav')
+        {{-- @include('translation::nav') --}}
         @include('translation::notifications')
         
         @yield('body')
